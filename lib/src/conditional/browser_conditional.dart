@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -17,6 +18,8 @@ class BrowserConditional extends BaseConditional {
   ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
     if (uri.startsWith('http') || uri.startsWith('blob')) {
       return NetworkImage(uri, headers: headers);
+    } else if (uri.isNotEmpty) {
+      return MemoryImage(base64Decode(uri));
     } else {
       return MemoryImage(kTransparentImage);
     }
