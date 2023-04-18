@@ -18,6 +18,8 @@ class BrowserConditional extends BaseConditional {
   ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
     if (uri.startsWith('http') || uri.startsWith('blob')) {
       return NetworkImage(uri, headers: headers);
+    } else if (uri.startsWith('assets')) {
+      return AssetImage(uri);
     } else if (uri.isNotEmpty) {
       return MemoryImage(base64Decode(uri));
     } else {

@@ -18,6 +18,8 @@ class IOConditional extends BaseConditional {
   ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
     if (uri.startsWith('http')) {
       return NetworkImage(uri, headers: headers);
+    } else if(uri.startsWith('assets')) {
+      return AssetImage(uri);
     } else if(isFilePath(uri)) {
       return FileImage(File(uri));
     } else {
