@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
+import '../../conditional/conditional.dart';
 import '../../models/bubble_rtl_alignment.dart';
 import '../../util.dart';
 import '../state/inherited_chat_theme.dart';
@@ -50,7 +51,7 @@ class UserAvatar extends StatelessWidget {
                   .userAvatarImageBackgroundColor
               : color,
           backgroundImage: hasImage
-              ? NetworkImage(author.imageUrl!, headers: imageHeaders)
+              ?  Conditional().getProvider(author.imageUrl!, headers: imageHeaders)//NetworkImage(author.imageUrl!, headers: imageHeaders)
               : null,
           radius: 16,
           child: !hasImage
