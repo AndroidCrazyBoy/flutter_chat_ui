@@ -208,6 +208,7 @@ class _InputState extends State<Input> {
                       keyboardType: widget.options.keyboardType,
                       maxLines: 5,
                       minLines: 1,
+                      inputFormatters: widget.options.textInputFormatter,
                       onChanged: widget.options.onTextChanged,
                       onTap: widget.options.onTextFieldTap,
                       style: InheritedChatTheme.of(context)
@@ -250,6 +251,7 @@ class InputOptions {
     this.keyboardType = TextInputType.multiline,
     this.onTextChanged,
     this.onTextFieldTap,
+    this.textInputFormatter,
     this.sendButtonVisibilityMode = SendButtonVisibilityMode.editing,
     this.textEditingController,
     this.autocorrect = true,
@@ -265,6 +267,9 @@ class InputOptions {
 
   /// Will be called whenever the text inside [TextField] changes.
   final void Function(String)? onTextChanged;
+
+  /// [TextField#inputFormatters]
+  final List<TextInputFormatter>? textInputFormatter;
 
   /// Will be called on [TextField] tap.
   final VoidCallback? onTextFieldTap;
