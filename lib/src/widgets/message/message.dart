@@ -52,6 +52,7 @@ class Message extends StatelessWidget {
     required this.usePreviewData,
     this.userAgent,
     this.videoMessageBuilder,
+    this.toolsMessageBuilder,
   });
 
   /// Build an audio message inside predefined bubble.
@@ -165,6 +166,8 @@ class Message extends StatelessWidget {
 
   /// Build an audio message inside predefined bubble.
   final Widget Function(types.VideoMessage, {required int messageWidth})? videoMessageBuilder;
+
+  final Widget Function(bool currentUserIsAuthor, types.Message message)? toolsMessageBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -299,12 +302,12 @@ class Message extends StatelessWidget {
   ) =>
       bubbleBuilder != null
           ? bubbleBuilder!(
-              _messageBuilder(),
+              _messageBuilder(context),
               message: message,
               nextMessageInGroup: roundBorder,
             )
           : enlargeEmojis && hideBackgroundOnEmojiMessages
-              ? _messageBuilder()
+              ? _messageBuilder(context)
               : Container(
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
@@ -314,39 +317,44 @@ class Message extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: borderRadius,
-                    child: _messageBuilder(),
+                    child: _messageBuilder(context),
                   ),
                 );
 
-  Widget _messageBuilder() {
+  Widget _messageBuilder(BuildContext context) {
+    Widget resultWidget;
     switch (message.type) {
       case types.MessageType.audio:
         final audioMessage = message as types.AudioMessage;
-        return audioMessageBuilder != null
+        resultWidget = audioMessageBuilder != null
             ? audioMessageBuilder!(audioMessage, messageWidth: messageWidth)
             : const SizedBox();
+        break;
       case types.MessageType.custom:
         final customMessage = message as types.CustomMessage;
-        return customMessageBuilder != null
+        resultWidget = customMessageBuilder != null
             ? customMessageBuilder!(customMessage, messageWidth: messageWidth)
             : const SizedBox();
+        break;
       case types.MessageType.file:
         final fileMessage = message as types.FileMessage;
-        return fileMessageBuilder != null
+        resultWidget = fileMessageBuilder != null
             ? fileMessageBuilder!(fileMessage, messageWidth: messageWidth)
             : FileMessage(message: fileMessage);
+        break;
       case types.MessageType.image:
         final imageMessage = message as types.ImageMessage;
-        return imageMessageBuilder != null
+        resultWidget = imageMessageBuilder != null
             ? imageMessageBuilder!(imageMessage, messageWidth: messageWidth)
             : ImageMessage(
                 imageHeaders: imageHeaders,
                 message: imageMessage,
                 messageWidth: messageWidth,
               );
+        break;
       case types.MessageType.text:
         final textMessage = message as types.TextMessage;
-        return textMessageBuilder != null
+        resultWidget = textMessageBuilder != null
             ? textMessageBuilder!(
                 textMessage,
                 messageWidth: messageWidth,
@@ -363,13 +371,28 @@ class Message extends StatelessWidget {
                 usePreviewData: usePreviewData,
                 userAgent: userAgent,
               );
+        break;
       case types.MessageType.video:
         final videoMessage = message as types.VideoMessage;
-        return videoMessageBuilder != null
+        resultWidget = videoMessageBuilder != null
             ? videoMessageBuilder!(videoMessage, messageWidth: messageWidth)
             : const SizedBox();
+        break;
       default:
-        return const SizedBox();
+        resultWidget = const SizedBox();
+        break;
     }
+
+    final user = InheritedUser.of(context).user;
+    final currentUserIsAuthor = user.id == message.author.id;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      textDirection: currentUserIsAuthor ? TextDirection.ltr : TextDirection.rtl,
+      children: [
+        resultWidget,
+        toolsMessageBuilder?.call(currentUserIsAuthor, message) ?? const SizedBox(),
+      ],
+    );
   }
 }

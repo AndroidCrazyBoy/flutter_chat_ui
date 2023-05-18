@@ -95,6 +95,7 @@ class Chat extends StatefulWidget {
     this.userAgent,
     this.useTopSafeAreaInset,
     this.videoMessageBuilder,
+    this.toolsMessageBuilder,
   });
 
   /// See [Message.audioMessageBuilder].
@@ -314,6 +315,9 @@ class Chat extends StatefulWidget {
   /// See [Message.videoMessageBuilder].
   final Widget Function(types.VideoMessage, {required int messageWidth})? videoMessageBuilder;
 
+  /// See [Message.toolsMessageBuilder].
+  final Widget Function(bool currentUserIsAuthor, types.Message message)? toolsMessageBuilder;
+
   @override
   State<Chat> createState() => ChatState();
 }
@@ -522,9 +526,8 @@ class ChatState extends State<Chat> {
       if (message is types.SystemMessage) {
         messageWidget = widget.systemMessageBuilder?.call(message) ?? SystemMessage(message: message.text);
       } else {
-        final messageWidth = widget.showUserAvatars
-            ? (constraints.maxWidth * 0.72).floor()
-            : (constraints.maxWidth * 0.78).floor();
+        final messageWidth =
+            widget.showUserAvatars ? (constraints.maxWidth * 0.72).floor() : (constraints.maxWidth * 0.78).floor();
 
         messageWidget = Message(
           audioMessageBuilder: widget.audioMessageBuilder,
@@ -555,7 +558,8 @@ class ChatState extends State<Chat> {
           },
           onMessageVisibilityChanged: widget.onMessageVisibilityChanged,
           onPreviewDataFetched: _onPreviewDataFetched,
-          roundBorder: true,//map['nextMessageInGroup'] == true,
+          roundBorder: true,
+          //map['nextMessageInGroup'] == true,
           showAvatar: map['nextMessageInGroup'] == false,
           showName: map['showName'] == true,
           showStatus: map['showStatus'] == true,
@@ -565,6 +569,7 @@ class ChatState extends State<Chat> {
           usePreviewData: widget.usePreviewData,
           userAgent: widget.userAgent,
           videoMessageBuilder: widget.videoMessageBuilder,
+          toolsMessageBuilder: widget.toolsMessageBuilder,
         );
       }
 
