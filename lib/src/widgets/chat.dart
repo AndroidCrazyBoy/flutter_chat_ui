@@ -77,6 +77,7 @@ class Chat extends StatefulWidget {
     this.onMessageStatusTap,
     this.onMessageTap,
     this.onMessageVisibilityChanged,
+    this.onImageMessageDownloadTap,
     this.onPreviewDataFetched,
     required this.onSendPressed,
     this.scrollController,
@@ -251,6 +252,8 @@ class Chat extends StatefulWidget {
 
   /// See [Message.onPreviewDataFetched].
   final void Function(types.TextMessage, types.PreviewData)? onPreviewDataFetched;
+
+  final void Function(BuildContext context, String uri)? onImageMessageDownloadTap;
 
   /// See [Input.onSendPressed].
   final void Function(types.PartialText) onSendPressed;
@@ -601,6 +604,7 @@ class ChatState extends State<Chat> {
           images: _gallery,
           pageController: _galleryPageController!,
           onClosePressed: _onCloseGalleryPressed,
+          onDownloadPressed: (uri) => widget.onImageMessageDownloadTap?.call(context, uri),
           options: widget.imageGalleryOptions,
         ),
       ),

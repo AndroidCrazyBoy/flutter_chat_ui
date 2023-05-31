@@ -10,6 +10,7 @@ class ImageGallery extends StatelessWidget {
     this.imageHeaders,
     required this.images,
     required this.onClosePressed,
+    required this.onDownloadPressed,
     this.options = const ImageGalleryOptions(),
     required this.pageController,
   });
@@ -22,6 +23,8 @@ class ImageGallery extends StatelessWidget {
 
   /// Triggered when the gallery is swiped down or closed via the icon.
   final VoidCallback onClosePressed;
+
+  final Function(String) onDownloadPressed;
 
   /// Customisation options for the gallery.
   final ImageGalleryOptions options;
@@ -57,6 +60,17 @@ class ImageGallery extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                   onClosePressed();
+                },
+              ),
+            ),
+            Positioned.directional(
+              end: 20,
+              textDirection: Directionality.of(context),
+              bottom: 40,
+              child: IconButton(
+                icon: const Icon(Icons.download, color: Colors.white),
+                onPressed: () {
+                  onDownloadPressed(images[pageController.page?.toInt() ?? 0].uri);
                 },
               ),
             ),
