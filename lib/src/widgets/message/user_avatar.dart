@@ -31,10 +31,6 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = getUserAvatarNameColor(
-      author,
-      InheritedChatTheme.of(context).theme.userAvatarNameColors,
-    );
     final hasImage = author.imageUrl != null;
     final initials = getUserInitials(author);
 
@@ -44,17 +40,21 @@ class UserAvatar extends StatelessWidget {
       //     : const EdgeInsets.only(right: 8),
       child: GestureDetector(
         onTap: () => onAvatarTap?.call(author),
-        child: CircleAvatar(
-          backgroundColor: hasImage ? InheritedChatTheme.of(context).theme.userAvatarImageBackgroundColor : color,
-          backgroundImage: hasImage ? Conditional().getProvider(author.imageUrl!, headers: imageHeaders) : null,
-          radius: 18,
-          child: !hasImage
-              ? Text(
+        child: hasImage
+            ? ClipOval(
+                child: Image(
+                  image: Conditional().getProvider(author.imageUrl!, headers: imageHeaders),
+                  width: 36,
+                  height: 36,
+                ),
+              )
+            : CircleAvatar(
+                radius: 18,
+                child: Text(
                   initials,
                   style: InheritedChatTheme.of(context).theme.userAvatarTextStyle,
-                )
-              : null,
-        ),
+                ),
+              ),
       ),
     );
   }
