@@ -16,14 +16,18 @@ class BrowserConditional extends BaseConditional {
   /// otherwise returns transparent image
   @override
   ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
-    if (uri.startsWith('http') || uri.startsWith('blob')) {
-      return NetworkImage(uri, headers: headers);
-    } else if (uri.startsWith('assets')) {
-      return AssetImage(uri);
-    } else if (uri.isNotEmpty) {
-      return MemoryImage(base64Decode(uri));
-    } else {
-      return MemoryImage(kTransparentImage);
+    try {
+      if (uri.startsWith('http') || uri.startsWith('blob')) {
+        return NetworkImage(uri, headers: headers);
+      } else if (uri.startsWith('assets')) {
+        return AssetImage(uri);
+      } else if (uri.isNotEmpty) {
+        return MemoryImage(base64Decode(uri));
+      } else {
+        return MemoryImage(kTransparentImage);
+      }
+    } catch (e) {
+      return const AssetImage('assets/icon-error.png', package: 'flutter_chat_ui');
     }
   }
 }

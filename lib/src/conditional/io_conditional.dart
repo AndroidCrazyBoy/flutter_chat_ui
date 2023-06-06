@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../widgets/state/inherited_chat_theme.dart';
 import 'base_conditional.dart';
 
 /// Create a [IOConditional].
@@ -16,14 +18,18 @@ class IOConditional extends BaseConditional {
   /// otherwise uses IO to create File
   @override
   ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
-    if (uri.startsWith('http')) {
-      return NetworkImage(uri, headers: headers);
-    } else if(uri.startsWith('assets')) {
-      return AssetImage(uri);
-    } else if(isFilePath(uri)) {
-      return FileImage(File(uri));
-    } else {
-      return MemoryImage(base64Decode(uri));
+    try {
+      if (uri.startsWith('http')) {
+        return NetworkImage(uri, headers: headers);
+      } else if (uri.startsWith('assets')) {
+        return AssetImage(uri);
+      } else if (isFilePath(uri)) {
+        return FileImage(File(uri));
+      } else {
+        return MemoryImage(base64Decode(uri));
+      }
+    } catch (e) {
+      return const AssetImage('assets/icon-error.png', package: 'flutter_chat_ui');
     }
   }
 
