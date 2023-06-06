@@ -25,6 +25,7 @@ class ChatList extends StatefulWidget {
     this.scrollPhysics,
     this.typingIndicatorOptions,
     required this.useTopSafeAreaInset,
+    required this.autoScrollToBottom,
   });
 
   /// A custom widget at the bottom of the list.
@@ -72,6 +73,8 @@ class ChatList extends StatefulWidget {
 
   /// Whether to use top safe area inset for the list.
   final bool useTopSafeAreaInset;
+
+  final bool autoScrollToBottom;
 
   @override
   State<ChatList> createState() => _ChatListState();
@@ -314,7 +317,7 @@ class _ChatListState extends State<ChatList>
         // Compare items to fire only on newly added messages.
         if (oldMessage.id != message.id) {
           // Run only for sent message.
-          if (message.author.id == InheritedUser.of(context).user.id) {
+          if (widget.autoScrollToBottom) {
             // Delay to give some time for Flutter to calculate new
             // size after new message was added
             Future.delayed(const Duration(milliseconds: 100), () {

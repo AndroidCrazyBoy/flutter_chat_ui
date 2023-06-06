@@ -97,6 +97,7 @@ class Chat extends StatefulWidget {
     this.useTopSafeAreaInset,
     this.videoMessageBuilder,
     this.toolsMessageBuilder,
+    this.autoScrollToBottom = true,
   });
 
   /// See [Message.audioMessageBuilder].
@@ -180,6 +181,9 @@ class Chat extends StatefulWidget {
 
   /// See [Message.hideBackgroundOnEmojiMessages].
   final bool hideBackgroundOnEmojiMessages;
+
+  /// See [ChatList.autoScrollToBottom]
+  final bool autoScrollToBottom;
 
   /// See [ImageGallery.options].
   final ImageGalleryOptions imageGalleryOptions;
@@ -444,6 +448,7 @@ class ChatState extends State<Chat> {
                                     scrollPhysics: widget.scrollPhysics,
                                     typingIndicatorOptions: widget.typingIndicatorOptions,
                                     useTopSafeAreaInset: widget.useTopSafeAreaInset ?? isMobile,
+                                    autoScrollToBottom: widget.autoScrollToBottom,
                                   ),
                                 ),
                               ),
