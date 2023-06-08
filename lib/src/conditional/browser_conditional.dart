@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'base_conditional.dart';
@@ -18,7 +19,7 @@ class BrowserConditional extends BaseConditional {
   ImageProvider getProvider(String uri, {Map<String, String>? headers}) {
     try {
       if (uri.startsWith('http') || uri.startsWith('blob')) {
-        return NetworkImage(uri, headers: headers);
+        return CachedNetworkImageProvider(uri, headers: headers);
       } else if (uri.startsWith('assets')) {
         return AssetImage(uri);
       } else if (uri.isNotEmpty) {
